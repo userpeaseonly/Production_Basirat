@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block title %}{{ test.title }}{% endblock %}
+{% block content %}
+    <div class="container">
+        <h2 class="main_color brand_name">{{ test.title }}<div id="timer">asdf</div></h2>
+  <div class="card" id="test-information">
+    <div class="card-body">
+          <h5 class="card-title">{{ test.title }}</h5>
+          <p class="card-text">{{ test.description }}</p>
+          <p class="card-text">Duration: {{ test.duration_minutes }} minutes</p>
+          <p class="card-text">Teacher: {{ test.teacher.username }}</p>
+          <p class="card-text">Created At: {{ test.created_at }}</p>
+          <p class="card-text">Status: {% if test.is_active %}Active{% else %}Inactive{% endif %}</p>
+          <p class="card-text">Start: {{ test.start_date }}</p>
+          <p class="card-text">End: {{ test.end_date }}</p>
+        <div class="d-flex align-items-center">
+            <strong>Loading...</strong>
+            <div class="spinner-border ml-auto ms-3" role="status" aria-hidden="true"></div>
+        </div>
+    </div>
+  </div>
+
+
+<div id="questions" class="mt-4" style="display: none">
+  <form id="testForm" action="{% url 'tests:submit_answers' test.id %}" method="post">
+    {% csrf_token %}
+    {% for question in test.question_set.all %}
+    <div class="card mb-3">
+      <div class="card-body">
+{#        <img src="{{ question.image.url }}" alt="Image">#}
+      {% if question.image %}
+          <img src="{{ question.image.url }}" alt="Image" class="img-fluid rounded">
+      {% endif %}
+        <h5 class="card-title">{{ question.text }}</h5>
+        <p class="card-text">{{ question.explanation }}</p>
+        <p class="card-text">Points: {{ question.points }}</p>
+        <p class="card-text">Choice(s):</p>
+        <ul class="list-unstyled">
+          {% for choice in question.multiplechoiceoption_set.all %}
+          <li>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="question_{{ question.id }}" id="choice_{{ choice.id }}" value="{{ choice.id }}" data-correct="{{ choice.is_correct }}">
+              <label class="form-check-label" for="choice_{{ choice.id }}">{{ choice.text }}</label>
+            </div>
+          </li>
+          {% empty %}
+            <div class="mb-3">
+                <label class="form-label" for="closed_question">Your statically typed answer</label>
+                <textarea class="form-control" type="text" name="question_{{ question.id }}" id="closed_question" rows="3"></textarea>
+            </div>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    {% endfor %}
+        <button type="submit" class="btn btn-primary my-2">Submit Answers</button>
+  </form>
+</div>
+
+</div>
+    <script>
+        const csrftoken = '{{ csrf_token }}';
+        const duration_time = {{ test.duration_minutes }};
+        const test_id = {{ test.id }};
+        const test_duration_minutes = {{ test.duration_minutes }};
+    </script>
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+{% block content %}
+    <div class="container">
+        <h1>Test Result</h1>
+        <div class="card">
+            <div class="card-header">
+                Test Information
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">{{ test.title }}</h5>
+                <p class="card-text">{{ test.description }}</p>
+                <p class="card-text">Date: {{ result.date }}</p>
+                <p class="card-text">Score: {{ result.score }}</p>
+                {% with time_info=result.time_taken|convert_seconds_to_minutes %}
+                    <p class="card-text">
+                        Time Taken: {{ time_info.minutes }} minutes and {{ time_info.seconds }} seconds
+                    </p>
+                {% endwith %}
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <h2>Question Results</h2>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Question</th>
+                    <th>Your Answer</th>
+                    <th>Correct Answer</th>
+                    <th>Result</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for question_result in result.questionresult_set.all %}
+                    <tr>
+                        <td>{{ question_result.question.text }}</td>
+                        <td>{{ question_result.student_answer }}</td>
+                        <td>{{ question_result.question.get_correct_answer }}</td>
+                        <td><span
+                                class="badge badge-pill badge-primary {% if question_result.is_correct %}bg-success{% else %}bg-danger{% endif %}">{% if question_result.is_correct %}
+                            Correct {% else %} Incorrect {% endif %}</span></td>
+                    </tr>
+                {% endfor %}
+                {% for closed_question_result in result.closedquestionresult_set.all %}
+                    <tr>
+                        <td>{{ closed_question_result.question.text }}</td>
+                        <td>
+                                <span class="truncated-text" onclick="toggleFullText(this)">
+                                    {{ closed_question_result.student_answer|truncatechars:10 }}
+                                </span>
+                            <span class="full-text" style="display: none;">
+                                    {{ closed_question_result.student_answer }}
+                                </span>
+                        </td>
+                        <td>{{ closed_question_result.teacher_comment }}</td>
+                        <td>
+                                <span class="badge badge-pill badge-primary {% if closed_question_result.is_correct %}bg-success{% elif closed_question_result.is_correct == False %}bg-danger{% else %}bg-warning{% endif %}">
+                                    {% if closed_question_result.is_correct %} Correct {% elif closed_question_result.is_correct == False %} Incorrect {% else %} Ungraded {% endif %}
+                                </span>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function toggleFullText(element) {
+            const truncatedText = element.querySelector('.truncated-text');
+            const fullText = element.querySelector('.full-text');
+
+            truncatedText.style.display = 'none';
+            fullText.style.display = 'inline';
+
+            fullText.addEventListener('click', function () {
+                truncatedText.style.display = 'inline';
+                fullText.style.display = 'none';
+            });
+        }
+    </script>
+{% endblock %}

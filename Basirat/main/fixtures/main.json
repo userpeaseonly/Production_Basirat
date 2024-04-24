@@ -1,0 +1,113 @@
+[
+{
+  "model": "main.group",
+  "pk": 1,
+  "fields": {
+    "group_number": "100"
+  }
+},
+{
+  "model": "main.group",
+  "pk": 2,
+  "fields": {
+    "group_number": "101"
+  }
+},
+{
+  "model": "main.group",
+  "pk": 3,
+  "fields": {
+    "group_number": "103"
+  }
+},
+{
+  "model": "main.student",
+  "pk": 1,
+  "fields": {
+    "user": 2,
+    "group": 1,
+    "age": 19,
+    "image": "default.jpg"
+  }
+},
+{
+  "model": "main.student",
+  "pk": 2,
+  "fields": {
+    "user": 3,
+    "group": 1,
+    "age": 20,
+    "image": "default.jpg"
+  }
+},
+{
+  "model": "main.student",
+  "pk": 3,
+  "fields": {
+    "user": 4,
+    "group": 2,
+    "age": 21,
+    "image": "default.jpg"
+  }
+},
+{
+  "model": "main.student",
+  "pk": 4,
+  "fields": {
+    "user": 5,
+    "group": 3,
+    "age": 21,
+    "image": "default.jpg"
+  }
+},
+{
+  "model": "main.student",
+  "pk": 5,
+  "fields": {
+    "user": 6,
+    "group": 3,
+    "age": 23,
+    "image": "default.jpg"
+  }
+},
+{
+  "model": "main.student",
+  "pk": 6,
+  "fields": {
+    "user": 7,
+    "group": 1,
+    "age": 32,
+    "image": "default.jpg"
+  }
+},
+{
+  "model": "main.student",
+  "pk": 7,
+  "fields": {
+    "user": 8,
+    "group": 2,
+    "age": 29,
+    "image": "default.jpg"
+  }
+},
+{
+  "model": "main.student",
+  "pk": 8,
+  "fields": {
+    "user": 9,
+    "group": 2,
+    "age": 35,
+    "image": "default.jpg"
+  }
+},
+{
+  "model": "main.student",
+  "pk": 9,
+  "fields": {
+    "user": 10,
+    "group": 3,
+    "age": 19,
+    "image": "default.jpg"
+  }
+}
+]

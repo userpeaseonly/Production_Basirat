@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Edit Tests{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ test.title }}</h5>
+                    <p class="card-text d-none" id="test_id">{{ test.id }}</p>
+                    <p class="card-text">{{ test.description }}</p>
+                    <p class="card-text">Duration: {{ test.duration_minutes }} minutes</p>
+                    <p class="card-text">Teacher: {{ test.teacher.username }}</p>
+                    {% if is_admin %}
+                        <p class="card-text">Created At: {{ test.created_at }}</p>
+                    {% endif %}
+                    <p class="card-text">Status: {% if test.is_active %}Active{% else %}Inactive{% endif %}</p>
+                    <p class="card-text">Start: {{ test.start_date }}</p>
+                    <p class="card-text">End: {{ test.end_date }}</p>
+                    {% for group in test.groups_set.all %}
+                        <p>{{ group }}</p>
+                    {% endfor %}
+                    {#                    <button type="submit" class="btn btn-danger">Deactivate Question</button>#}
+
+                    <span class="" id="deactivate-test">
+                        <button href="" class="btn {% if test.is_active %}btn-danger{% else %}btn-success{% endif %}" id="deactivate-test">{% if test.is_active %}Deactivate Test{% else %}Activate Test{% endif %}</button>
+                    </span>
+                    <span class="" id="">
+                        <button id="delete-test-button" class="btn btn-danger">Delete Test</button>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 mb-4">
+            <div class="card-body" id="questions">
+                {% for question in questions %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card p-3">
+                            <div class="card-body">
+                                  {% if question.image %}
+                                      <img src="{{ question.image.url }}" alt="Image" class="img-fluid rounded">
+                                  {% endif %}
+                                <h5 class="card-title">{{ question.text }}</h5>
+                                <p class="card-text">{{ question.explanation }}</p>
+                                <p class="card-text">Points: {{ question.points }}</p>
+                                {% if question.multiplechoiceoption_set %}
+                                <p class="card-text">Options:</p>
+                                    <ul>
+                                        {% for option in question.multiplechoiceoption_set.all %}
+                                            <li>
+                                                {% if option.is_correct %}
+                                                    <strong>✅</strong>
+                                                {% endif %}
+                                                {{ option.choice }}. {{ option.text }}
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                                <button class="btn btn-danger" id="delete-question-button" data-question-id="{{ question.id }}">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <span class="" id="add-question-button-holder">
+        <button href="" class="btn btn-success" id="add-question-button">Add Question</button>
+      </span>
+
+        </div>
+        <div class="row" id="question-row">
+            <!-- Existing or dynamically added question cards will go here -->
+        </div>
+    </div>
+
+    <!-- Template for the question card -->
+    <script id="question-card-template" type="text/template">
+        <div class="col-md-4 mb-4">
+            <div class="card p-3">
+                <!-- add_question_form.html -->
+                <form id="add-question-form" method="POST" enctype=multipart/form-data>
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="text" class="form-label">Question Text:</label>
+                        <input type="text" class="form-control" id="text" name="text" placeholder="Enter question text"
+                               required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="image" class="form-label">Question Image (optional):</label>
+                        <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                    </div>
+                    <div class="mb-3">
+                        <label for="explanation" class="form-label">Explanation (optional):</label>
+                        <textarea class="form-control" id="explanation" name="explanation"
+                                  placeholder="Enter explanation"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="points" class="form-label">Points (optional):</label>
+                        <input type="number" class="form-control" id="points" name="points" placeholder="Enter points">
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="open-question" checked>
+                        <label class="form-check-label" for="open-question">Open Question</label>
+                    </div>
+                    <div id="options">
+                        <div class="mb-3" id="option_a">
+                            <label for="option_a_text" class="form-label">Option A:</label>
+                            <input type="text" class="form-control" id="option_a_text" name="option_a_text"
+                                   placeholder="Option A">
+                            <input type="checkbox" class="form-check-input" id="option_a_correct"
+                                   name="option_a_correct">
+                            <label class="form-check-label" for="option_a_correct">Correct Option</label>
+                        </div>
+                        <div class="mb-3" id="option_b">
+                            <label for="option_b_text" class="form-label">Option B:</label>
+                            <input type="text" class="form-control" id="option_b_text" name="option_b_text"
+                                   placeholder="Option B">
+                            <input type="checkbox" class="form-check-input" id="option_b_correct"
+                                   name="option_b_correct">
+                            <label class="form-check-label" for="option_b_correct">Correct Option</label>
+                        </div>
+                        <div class="mb-3" id="option_c">
+                            <label for="option_c_text" class="form-label">Option C:</label>
+                            <input type="text" class="form-control" id="option_c_text" name="option_c_text"
+                                   placeholder="Option C">
+                            <input type="checkbox" class="form-check-input" id="option_c_correct"
+                                   name="option_c_correct">
+                            <label class="form-check-label" for="option_c_correct">Correct Option</label>
+                        </div>
+                        <div class="mb-3" id="option_d">
+                            <label for="option_d_text" class="form-label">Option D:</label>
+                            <input type="text" class="form-control" id="option_d_text" name="option_d_text"
+                                   placeholder="Option D">
+                            <input type="checkbox" class="form-check-input" id="option_d_correct"
+                                   name="option_d_correct">
+                            <label class="form-check-label" for="option_d_correct">Correct Option</label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Question</button>
+                </form>
+
+            </div>
+        </div>
+    </script>
+
+    <script>
+        const createQuestionUrl = "{% url 'tests:create_question' %}";
+        const deactivate_test_url = "{% url 'tests:deactivate_test_endpoint' %}";
+        const testId = {{ test.id }};
+        const delete_test_url = "{% url 'tests:delete_test' %}"
+        const test_list_url = '{% url "tests:test_list" %}'
+        const delete_question_url = '{% url 'tests:delete_question' %}'
+    </script>
+
+{% endblock %}

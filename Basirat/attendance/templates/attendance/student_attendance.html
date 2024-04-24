@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}Student Attendance{% endblock %}
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center">
+        <h1 class="main-font brand_name" id="group_number">{{ student.student.group }} - Group</h1>
+    </div>
+    <br>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title brand_name">Student Attendance</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead class="brand_name main_color bg-main_color">
+                                    <th class="brand_name">
+                                        Date
+                                    </th>
+                                    <th class="brand_name">
+                                        Status
+                                    </th>
+                                </thead>
+                                <tbody>
+                                    {% for attendance in attendances %}
+                                        <tr>
+                                            <td>
+                                                <span class="brand_name">{{ attendance.date }}</span>
+                                            </td>
+                                            <td>
+                                                {% if attendance.present %}
+                                                    <span class="attendance-status badge badge-pill bg-success">Present</span>
+                                                {% else %}
+                                                    <span class="attendance-status badge badge-pill bg-danger">Absent</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+```

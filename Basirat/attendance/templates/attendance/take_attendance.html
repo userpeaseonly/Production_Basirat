@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block title %}Take Attendance{% endblock %}
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center">
+        <h1 class="main-font brand_name" id="group_number">{{ group }} - Group</h1>
+        <h2 class="main-font brand_name" id="date_now">{{ date }}</h2>
+    </div>
+
+    <form method="POST" id="submit-attendance">
+        {% csrf_token %}
+        <button class="take-attendance-btn btn btn-success" type="submit" id="create-attendance">Take Attendance
+        </button>
+        <br>
+        <ul class="student-list">
+            {% for student in students %}
+                <li class="student-item list-group-item d-flex justify-content-between align-items-center clickable"
+                    data-student-id="{{ student.user.id }}">{{ student.user.id }}
+                    <span class="student-name">{{ student.user.first_name }} {{ student.user.last_name }}</span>
+                    <span class="attendance-status badge badge-pill bg-success">Present</span>
+                    <input type="checkbox" class="attendance-checkbox invisible-checkbox d-none" checked>
+                    <input type="hidden" name="student_{{ student.user.id }}" class="student-attendance"
+                           value="present">
+                </li>
+            {% endfor %}
+        </ul>
+    </form>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.student-item').click(function () {
+                var checkbox = $(this).find('.invisible-checkbox');
+                var attendanceStatus = $(this).find('.attendance-status');
+
+                checkbox.prop('checked', !checkbox.prop('checked'));
+                if (checkbox.prop('checked')) {
+                    attendanceStatus.text('Present').addClass('bg-success').removeClass('bg-danger').removeClass('d-none');
+                    $(this).find('.student-attendance').val('present');
+                } else {
+                    attendanceStatus.text('Absent').addClass('bg-danger').removeClass('bg-success').removeClass('d-none');
+                    $(this).find('.student-attendance').val('absent');
+                }
+            });
+
+            $('#submit-attendance').submit(function (e) {
+                e.preventDefault();
+
+
+                var studentAttendanceData = {};
+                $('.student-attendance').each(function (index, element) {
+                    studentAttendanceData[$(element).attr('name')] = $(element).val();
+                });
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url 'attendance:create_attendance' %}',
+                    data: {
+                        group_id: '{{ group.id }}',
+                        student_attendance: JSON.stringify(studentAttendanceData),
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    success: function (response) {
+                        alert(response.message);
+                        window.location.href = '{% url 'attendance:teacher_attendance_page' %}'
+                    },
+                    error: function (response) {
+                        alert(response.message);
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

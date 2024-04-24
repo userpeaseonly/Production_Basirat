@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Take Attendance{% endblock %}
+{% block content %}
+    <h1 class="main-font brand_name">Groups</h1>
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <ul class="list-group">
+{#                {% for group in groups %}#}
+{#                    <li class="list-group-item d-flex justify-content-between align-items-center" onClick="location.href='{% url 'attendance:take_attendance' group.id %}';">#}
+{#                        <a class="main_color fw-bold">{{ group.group_number }}</a>#}
+{#                        <span class="badge badge-pill badge-primary bg-dark-subtle">{{ group.student_set.count }}</span>#}
+{#                    </li>#}
+{#                {% endfor %}#}
+                {% for key, value in is_taken.items %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center" onClick="location.href='{% url 'attendance:take_attendance' key.id %}';">
+                        <a class="main_color fw-bold">{{ key.group_number }}</a>
+                        <span class="badge badge-pill badge-primary {% if value %}bg-success{% else %}bg-dark-subtle{% endif %}">{{ key.student_set.count }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endblock %}

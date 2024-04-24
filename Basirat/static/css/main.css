@@ -1,0 +1,19 @@
+.student-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.student-item {
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.student-name {
+  font-weight: bold;
+}
+
+.student-details {
+  font-size: smaller;
+  color: #888;
+}

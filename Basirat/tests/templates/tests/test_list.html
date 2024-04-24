@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block title %}Tests{% endblock %}
+{% block content %}
+    <div class="container">
+        <h1 class="mt-1 mb-4 main_color brand_name">Tests</h1>
+
+        {% if request.user.is_staff %}
+            <div class="mb-4">
+                <a href="{% url 'tests:create_test_page' %}" class="btn btn-success">Create Test</a>
+            </div>
+        {% endif %}
+
+        <div class="row">
+            {% for test in tests %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ test.title }}</h5>
+                            <p class="card-text">{{ test.description }}</p>
+                            <p class="card-text">Duration: {{ test.duration_minutes }} minutes</p>
+                            <p class="card-text">Teacher: {{ test.teacher.username }}</p>
+                            {% if is_admin %}
+                                <p class="card-text">Created At: {{ test.created_at }}</p>
+                                <p class="card-text">Is Active: {% if test.is_active %}Active{% else %}Deactivated{% endif %}</p>
+                            {% endif %}
+                            <p class="card-text">Start: {{ test.start_date }}</p>
+                            <p class="card-text">End: {{ test.end_date }}</p>
+                            <div class="d-flex">
+                                Groups:&nbsp;&nbsp;|
+                                {% for group in test.groups.all %}
+                                    <p class="card-text">&nbsp;{{ group.group_number }} &nbsp;|</p>
+                                {% endfor %}
+                            </div>
+                            {% if is_admin %}
+                                <a href="{% url 'tests:edit_test_page' test.id %}" class="btn btn-primary">Edit</a>
+                            {% else %}
+                                <a href="{% url 'tests:take_test' test.id %}" class="btn btn-primary">Start Test</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            {% for test in completed_tests %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ test.title }}</h5>
+                            <p class="card-text">{{ test.description }}</p>
+                            <p class="card-text">Duration: {{ test.duration_minutes }} minutes</p>
+                            <p class="card-text">Teacher: {{ test.teacher.username }}</p>
+                            {% if is_admin %}
+                                <p class="card-text">Created At: {{ test.created_at }}</p>
+                            {% endif %}
+                            <p class="card-text">Start: {{ test.start_date }}</p>
+                            <p class="card-text">End: {{ test.end_date }}</p>
+                            <div class="d-flex">
+                                Groups:&nbsp;&nbsp;|
+                                {% for group in test.groups.all %}
+                                    <p class="card-text">&nbsp;{{ group.group_number }} &nbsp;|</p>
+                                {% endfor %}
+                            </div>
+                            <a href="{% url 'tests:test_result' test.id %}" class="btn btn-warning">Test Results</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

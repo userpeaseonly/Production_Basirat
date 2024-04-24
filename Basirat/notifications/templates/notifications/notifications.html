@@ -1,0 +1,47 @@
+{% load custom_filters %}
+<div id="notification">
+
+</div>
+{% if the_student.is_staff %}
+    <form id="form" class="mt-3">
+        <div class="input-group mb-3">
+            <select id="groupSelect" class="form-select" aria-label="Select Group">
+                <option selected disabled>Select Group</option>
+                {% get_all_groups as groups %}
+                {% for group in groups %}
+                    <option value="{{ group.pk }}">{{ group.group_number }}</option>
+                {% endfor %}
+            </select>
+            <input type="text" id="message" name="message" placeholder="Enter message" class="form-control">
+            <button type="submit" class="btn btn-primary">Send</button>
+        </div>
+    </form>
+{% endif %}
+
+<script type="text/javascript">
+    let url = `wss://${window.location.host}/ws/notifications/`;
+
+    const chatSocket = new WebSocket(url);
+
+    chatSocket.onmessage = function (e) {
+        const data = JSON.parse(e.data);
+
+        if (data.type === 'notification') {
+            let notifications = document.getElementById('notification');
+            notifications.insertAdjacentHTML('beforeend', `<a href="#" class="list-group-item list-group-item-action">${data.message}</a>`)
+
+        }
+    };
+
+    let form = document.getElementById('form');
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        let group = document.getElementById('groupSelect').value;
+        let message = e.target.message.value;
+        chatSocket.send(JSON.stringify({
+            'group': group,
+            'message': message
+        }));
+        form.reset();
+    });
+</script>

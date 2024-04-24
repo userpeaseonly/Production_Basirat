@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Check Test{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="card mt-3">
+        <div class="card-body">
+            <h5 class="card-title brand_name">Check Test Question</h5>
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{ closed_question.question.text }}</h5>
+                    {% if closed_question.question.image %}
+                    <img src="{{ closed_question.question.image.url }}" class="img-fluid" alt="Question Image">
+                    {% endif %}
+                    <p class="card-text">{{ closed_question.question.explanation }}</p>
+                    <p class="card-text">Student Answer: {{ closed_question.student_answer }}</p>
+                </div>
+            </div>
+            <form id="checkTestForm" method="post" action="{% url 'tests:check_test' closed_question.id %}">
+                {% csrf_token %}
+                <div class="form-group mt-3">
+                    <label for="teacherComment">Teacher Comment:</label>
+                    <textarea class="form-control" id="teacherComment" name="comment" rows="3"></textarea>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="isCorrect" name="is_correct" value="true">
+                    <label class="form-check-label" for="isCorrect">Correct</label>
+                </div>
+                <button type="submit" class="btn btn-primary mt-3">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

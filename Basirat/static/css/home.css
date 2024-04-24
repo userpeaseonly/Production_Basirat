@@ -1,0 +1,60 @@
+{% load static %}
+
+
+
+
+.brand_name{
+    color: #571F3F;
+    font-weight: 700;
+    font-family: serif;
+    margin-left: 1rem;
+    font-style: italic;
+}
+
+.main-font-{
+    color: #571F3F;
+    font-weight: 500;
+    font-family: serif;
+    margin-left: 1rem;
+    font-style: italic;
+}
+
+.main_color{
+    color: #571F3F;
+}
+
+.bg-main_color{
+    background-color: #571F3F;
+}
+
+.bg_main_color{
+    background-color: #571F3F;
+}
+
+.links{
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-family: serif;
+    margin-left: 1rem;
+    font-style: italic;
+}
+
+.student-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.student-item {
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.student-name {
+  font-weight: bold;
+}
+
+.student-details {
+  font-size: smaller;
+  color: #888;
+}

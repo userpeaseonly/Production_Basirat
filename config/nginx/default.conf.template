@@ -1,0 +1,38 @@
+# upstream for uWSGI
+upstream uwsgi_app {
+    server unix:/code/Basirat/uwsgi_app.sock;
+}
+# upstream for Daphne
+upstream daphne {
+    server unix:/code/Basirat/daphne.sock;
+}
+server {
+    listen       80;
+    server_name www.basiratproject.com basiratproject.com;
+    return 301 https://$server_name$request_uri;
+}
+server {
+    listen               443 ssl;
+    ssl_certificate      /code/Basirat/ssl/Basirat.crt;
+    ssl_certificate_key  /code/Basirat/ssl/Basirat.key;
+    server_name  www.basiratproject.com basiratproject.com;
+    error_log    stderr warn;
+    access_log   /dev/stdout main;
+    location / {
+        include      /etc/nginx/uwsgi_params;
+        uwsgi_pass   uwsgi_app;
+    }
+    location /ws/ {
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_redirect off;
+        proxy_pass http://daphne;
+    }
+    location /static/ {
+        alias /code/Basirat/static/;
+    }
+    location /media/ {
+        alias /code/Basirat/media/;
+    }
+}
