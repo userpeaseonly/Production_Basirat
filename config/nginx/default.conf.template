@@ -8,14 +8,14 @@ upstream daphne {
 }
 server {
     listen       80;
-    server_name www.basiratproject.com basiratproject.com;
+    server_name www.basirat.uz basirat.uz;
     return 301 https://$server_name$request_uri;
 }
 server {
     listen               443 ssl;
     ssl_certificate      /code/Basirat/ssl/Basirat.crt;
     ssl_certificate_key  /code/Basirat/ssl/Basirat.key;
-    server_name  www.basiratproject.com basiratproject.com;
+    server_name  www.basirat.uz basirat.uz;
     error_log    stderr warn;
     access_log   /dev/stdout main;
     location / {
