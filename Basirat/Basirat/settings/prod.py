@@ -1,11 +1,11 @@
 from .base import *
 
-DEBUG = False
+DEBUG = True
 
 ADMINS = [
     ('Normurodov U', 'userpeaseonly@gmail.com'),
 ]
-ALLOWED_HOSTS = ['basiratproject.com', 'www.basiratproject.com']
+ALLOWED_HOSTS = ['basirat.uz', 'www.basirat.uz']
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',

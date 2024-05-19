@@ -1,6 +1,11 @@
 {% load custom_filters %}
 <div id="notification">
-
+{#    <h3 class="text-center">Notifications</h3>#}
+    <div class="list-group">
+        {% for message in messages %}
+            <a href="#" class="list-group-item list-group-item-action">{{ message.message }}</a>
+        {% endfor %}
+    </div>
 </div>
 {% if the_student.is_staff %}
     <form id="form" class="mt-3">

@@ -3,13 +3,15 @@ from django.db.models import F, Sum
 from django.shortcuts import render
 
 from attendance.models import AttendanceStudent
-
+from django.utils import timezone
+from notifications.models import Message
 from tests.models import TestResult, ClosedQuestionResult
 
 
 @login_required(login_url='authentication:login')
 def home(request):
     the_student = request.user
+    messages = Message.objects.all() if the_student.is_staff else Message.objects.filter(group=the_student.student.group)
     try:
         percentage_of_attendance = attendance(request).__round__(2)
         percentage_of_progress = calculate_progress(request).__round__(2)
@@ -23,6 +25,7 @@ def home(request):
         'percentage_of_attendance': percentage_of_attendance,
         'percentage_of_progress': percentage_of_progress,
         'unchecked_tests': unchecked_tests,
+        'messages': messages
     }
     return render(request, 'main/home.html', context)
 
@@ -32,7 +35,7 @@ def attendance(request):
     group = student.student.group
     try:
         attendance_student_filtered = AttendanceStudent.objects.filter(attendance__group=group,
-                                                                  student=student.student).count() * 100
+                                                                       student=student.student).count() * 100
     except ZeroDivisionError:
         attendance_student_filtered = 1
     try:

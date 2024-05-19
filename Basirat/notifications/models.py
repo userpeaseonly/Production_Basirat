@@ -11,3 +11,9 @@ class Message(models.Model):
 
     def __str__(self):
         return f"Message from {self.sender.username} in Group {self.group.group_number} on {self.created_at}"
+
+    def __call__(self, *args, **kwargs):
+        return {
+            'message': self.message,
+            'sender': self.sender.username,
+            'timestamp': self.created_at.timestamp()}

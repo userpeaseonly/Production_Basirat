@@ -66,6 +66,7 @@
 #             for message in group_messages:
 #                 self.send_message(message)
 import json
+from typing import List
 
 from asgiref.sync import sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
@@ -82,7 +83,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         if self.user.is_authenticated:
             await self.accept()
             await self.subscribe_to_notifications()
-            await self.send_existing_messages()
+            # await self.send_existing_messages()
         else:
             await self.close()
 
@@ -120,14 +121,15 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             'timestamp': message.created_at.timestamp()  # Unix timestamp-
         }))
 
-    async def send_existing_messages(self):
-        if not self.user.is_staff:
-            # student = await self.get_student()
-            group = await self.get_student_group()
-            group_messages = await self.get_group_messages(group)
-            for message in group_messages:
-                print(f"###########################{message.message}")
-                await self.send_message(message)
+    # def send_existing_messages(self):
+    #     if not self.user.is_staff:
+    #         # student = await self.get_student()
+    #         group = self.get_student_group()
+    #         group_messages = self.get_group_messages(group)
+    #         print(f"{group_messages}---------------------------------------------------------------------")
+    #         for message in group_messages:
+    #             # print(f"{message.message}---------------------------------------------------------------------")
+    #             self.send_message(message)
 
     # Helper functions for asynchronous database access
     async def get_group(self, group_id):
@@ -143,10 +145,21 @@ class NotificationConsumer(AsyncWebsocketConsumer):
     async def create_message(self, group, sender, message_text):
         return await database_sync_to_async(Message.objects.create)(group=group, sender=sender, message=message_text)
 
-    async def get_group_messages(self, group):
-        return await database_sync_to_async(Message.objects.filter)(group=group,
-                                                                    created_at__gte=timezone.now() - timezone.timedelta(
-                                                                        days=5))
+    # @database_sync_to_async
+    # def get_group_messages(self, group):
+    #     # print(f"Group: {Message.objects.filter(group=group, created_at__gte=timezone.now() - timezone.timedelta(days=5))}---------------------------------------------------------------------")
+    #     # for message in Message.objects.filter(group=group, created_at__gte=timezone.now() - timezone.timedelta(days=5)):
+    #     #     print(f"Message: {message.message}---------------------------------------------------------------------")
+    #     return Message.objects.filter(group=group, created_at__gte=timezone.now() - timezone.timedelta(days=5))
+    #     # return database_sync_to_async(Message.objects.filter)(group=group,
+    #     #                                                       created_at__gte=timezone.now() - timezone.timedelta(
+    #     #                                                           days=5))
+    # @database_sync_to_async
+    # def get_group_messages(self, group):
+    #     return list(Message.objects.filter(
+    #         group=group,
+    #         created_at__gte=timezone.now() - timezone.timedelta(days=5)
+    #     ))
 
     async def get_student_group(self):
         return await database_sync_to_async(Group.objects.get)(student__user=self.user)

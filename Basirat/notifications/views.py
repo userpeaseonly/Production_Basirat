@@ -1,9 +1,11 @@
 from django.shortcuts import render
+from .models import Message
 
 
 # Create your views here.
 def notifications(request):
-    return render(request, 'notifications/notifications.html')
+    messages = Message.objects.filter(group__students__user=request.user)
+    return render(request, 'notifications/notifications.html', {'messages': messages})
 
 
 def delete_notification(request):
