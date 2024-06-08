@@ -19,6 +19,8 @@ services:
     restart: always
     volumes:
       - .:/code
+      - .:/code/Basirat/media/
+      - .:/code/Basirat/static/
     environment:
       - DJANGO_SETTINGS_MODULE=Basirat.settings.prod
       - POSTGRES_DB=postgres
