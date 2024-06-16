@@ -11,7 +11,7 @@ from .signals import test_started, test_submitted
 from main.models import Group, Student
 from .restrictions import restrict_test_access, restrict_test_access_if_taken
 
-
+# The code should be fixed
 @login_required(login_url='authentication:login')
 def test_list(request):
     is_admin = request.user.is_staff
